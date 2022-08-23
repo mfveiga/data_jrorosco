@@ -36,3 +36,4 @@ for loc, p, n in zip(zip(df["LAT"],df["LONG"]),df["PERC"],df["NM_LOCALIDADE"]):
         popup=Popup(n)).add_to(m3)
 
 mst_data = st_folium(m3)
+# end
