@@ -15,10 +15,26 @@ warnings.filterwarnings('ignore')
 
 df = pd.read_excel('JROROSCO_VOTOS.xlsx')
 
-df['PERC_%']=(round(df[['PERC']]*100,1)).astype(str)+"%"
+st.header("Informações pesquisa Junior Orosoco")
+
+df['%']=(round(df[['Percentual']]*100,1)).astype(str)+"%"
 # df2 = df[['NM_LOCALIDADE','PERC_%']].reset_index(drop=True)
 # st.dataframe(df2)
-st.dataframe(df)
+
+
+# CSS to inject contained in a string
+hide_table_row_index = """
+            <style>
+            thead tr th:first-child {display:none}
+            tbody th {display:none}
+            </style>
+            """
+
+# Inject CSS with Markdown
+st.markdown(hide_table_row_index, unsafe_allow_html=True)
+
+
+st.table(df[['Nome da Localidade','%','Total pesquia','Votos']])
 
 df_filter = df.select_dtypes(include=np.number).columns.to_list()
 df_filter.remove('LAT')
@@ -30,33 +46,36 @@ select_item = st.radio(
     df_filter
 )
 
-geo=r"geojs-35-mun.json"
-file = open(geo, encoding="utf8")
-text = file.read()
+visualize1 = st.checkbox("Visualizar mapa")
 
-m3 = folium.Map(location=[-23.638686523492638, -46.4], tiles="Cartodb Positron", zoom_start=11)
+if visualize1:
+    geo=r"geojs-35-mun.json"
+    file = open(geo, encoding="utf8")
+    text = file.read()
 
-folium.Choropleth(
-    geo_data=text,
-    data=df, 
-    columns=['NM_LOCALIDADE', 'VOTOS'],
-    legend_name='Quantidade de votos',
-    key_on='feature.properties.name',
-    fill_color="PuBu"
-    ).add_to(m3)
+    m3 = folium.Map(location=[-23.638686523492638, -46.4], tiles="Cartodb Positron", zoom_start=11)
 
-for loc, p, n in zip(zip(df['LAT'],df['LONG']),df[select_item],df['NM_LOCALIDADE']):
+    folium.Choropleth(
+        geo_data=text,
+        data=df, 
+        columns=['Nome da Localidade', 'Votos'],
+        legend_name='Quantidade de votos',
+        key_on='feature.properties.name',
+        fill_color="PuBu"
+        ).add_to(m3)
 
-    if select_item == 'PERC':
-        html='<div style="font-size: 10pt; color : black">'+"{:.1%}".format(p)+'</div>'
-    else:
-        html='<div style="font-size: 10pt; color : black">'+"{:.0f}".format(p)+'</div>'
+    for loc, p, n in zip(zip(df['LAT'],df['LONG']),df[select_item],df['Nome da Localidade']):
 
-    folium.Marker(loc, icon=DivIcon(
-        icon_size=(0,0),
-        icon_anchor=(10,0),
-        html=html,)).add_to(m3)
-    folium.Marker(loc,
-        popup=Popup(n)).add_to(m3)
+        if select_item == 'Percentual':
+            html='<div style="font-size: 10pt; color : black">'+"{:.1%}".format(p)+'</div>'
+        else:
+            html='<div style="font-size: 10pt; color : black">'+"{:.0f}".format(p)+'</div>'
 
-mst_data = st_folium(m3)
+        folium.Marker(loc, icon=DivIcon(
+            icon_size=(0,0),
+            icon_anchor=(10,0),
+            html=html,)).add_to(m3)
+        folium.Marker(loc,
+            popup=Popup(n)).add_to(m3)
+
+    mst_data = st_folium(m3)
