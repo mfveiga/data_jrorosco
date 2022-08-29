@@ -34,7 +34,7 @@ hide_table_row_index = """
 st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
 
-st.table(df[['Nome da Localidade','%','Total pesquia','Votos']])
+st.table(df[['Nome da Localidade','%','Total pesquisa','Votos']])
 
 df_filter = df.select_dtypes(include=np.number).columns.to_list()
 df_filter.remove('LAT')
