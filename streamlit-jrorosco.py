@@ -1,4 +1,5 @@
 # from turtle import pd
+from doctest import DONT_ACCEPT_TRUE_FOR_1
 import streamlit as st
 from streamlit_folium import st_folium
 import folium
@@ -79,3 +80,11 @@ if visualize1:
             popup=Popup(n)).add_to(m3)
 
     mst_data = st_folium(m3)
+
+
+
+st.header("Informações sobre Instagram Liderança")
+
+dfi = pd.read_excel('instagram_liderança.xlsx', sheet_name="liderança")
+dfi.astype(str)
+st.dataframe(dfi[['NOME','likes_post','str_perc_like']])
