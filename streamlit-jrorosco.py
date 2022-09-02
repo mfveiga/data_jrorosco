@@ -88,3 +88,19 @@ st.header("Informações sobre Instagram Liderança")
 dfi = pd.read_excel('instagram_liderança.xlsx', sheet_name="liderança")
 dfi.astype(str)
 st.dataframe(dfi[['NOME','likes_post','str_perc_like']])
+
+st.header("Instagram Likes (últimos 10 posts)")    
+
+dfii = pd.read_excel('instagram_liderança.xlsx', sheet_name="metricas")
+# st.table(dfii.head(10))
+
+def make_clickable(link):
+    # target _blank to open new window
+    # extract clickable text to display for your link
+    text = link.split('=')[0]
+    return f'<a target="_blank" href="{link}">{text}</a>'
+
+# TRAILER is the column with hyperlinks
+dfii['post_link'] = dfii['post_link'].apply(make_clickable)
+
+st.write(dfii.head(10).to_html(escape=False), unsafe_allow_html=True)
