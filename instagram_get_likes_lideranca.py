@@ -4,7 +4,7 @@ from datetime import datetime
 
 L = instaloader.Instaloader()
 
-USER = "lidod10344"
+USER = "socekin929"
 PROFILE = "juniororosco.sp"
 
 # Load session previously saved with `instaloader -l USERNAME`:
